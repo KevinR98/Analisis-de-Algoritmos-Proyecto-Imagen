@@ -75,7 +75,7 @@ public class AlgoritmoGenetico {
         for(int parActual = 0; parActual < cantidadGeneracionPasada/2 ; parActual = parActual + 2){
             for(int nuevoIndividuo = 0; nuevoIndividuo < cantidadNuevaPoblacion ; ++nuevoIndividuo){
                 poblacion[nuevoIndividuo] = new Individuo(32);
-                poblacion[nuevoIndividuo].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta);
+                poblacion[nuevoIndividuo].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta, 10);
             }
         }
         

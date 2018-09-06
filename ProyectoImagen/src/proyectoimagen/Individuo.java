@@ -53,8 +53,32 @@ public class Individuo {
     /*
     Algoritmo de mutacion y decendencia.
     */
-    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta){
+    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta, int porcentajeMutacion){
         calcularAdaptabilidad(imagenMeta);
+        
+        int primerMitad [] = primerOrigen.obtenerMitad(0);
+        int segundaMitad [] = segundoOrigen.obtenerMitad(0);
+        
+        //Merge
+        int mitad = this.tamanno/2;
+        
+        for(int indice = 0 ; indice<mitad ; ++indice){
+            this.informacionAzul[indice] = primerMitad[indice];
+            this.informacionAzul[indice+mitad] = segundaMitad[indice];
+        }
+        
+        
+        //Mutacion
+        /*
+        *   Se toma el procentaje que se desea cambiar aleatoriamente.
+        *   Se modifican los valores aleatoriamente de ese porcentaje.
+        */
+        Random numeroRandom = new Random();
+        int ciclosPorcentaje = (porcentajeMutacion)/100 * this.tamanno;
+        for(int informacionActual = 0; informacionActual < ciclosPorcentaje ; ++informacionActual){
+            this.informacionAzul[numeroRandom.nextInt(this.tamanno)] = numeroRandom.nextInt(256);
+        }
+        
     }
     
     
@@ -84,19 +108,14 @@ public class Individuo {
     1 = rojo
     2 = verde
     */
-    private int obtenerElemento(int x, int y, int color){
-        int elemento = 0;
-        int indice = y * 32 + x;
+    private int [] obtenerMitad(int color){
+        int mitad []=  new int[tamanno/2];
         
-        if(color == 0){
-            elemento = this.informacionAzul[indice];
-        } else if(color == 1){
-            elemento = this.informacionRojo[indice];
-        } else {
-            elemento = this.informacionVerde[indice];
+        for(int elemento = 0; elemento < tamanno/2 ; ++elemento){
+            mitad[elemento] = this.informacionAzul[elemento];
         }
         
-        return elemento;
+        return mitad;
     }
     
 }
