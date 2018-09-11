@@ -14,9 +14,12 @@ public class AlgoritmoGenetico {
     int tamannoPoblacion;
     
     
+    Individuo evolucion[];
+    
     AlgoritmoGenetico(String rutaImagenMeta, int generaciones, int tamannoPoblacion, int imagenX, int imagenY){
         
         this.imagenMeta = leerImagenMeta(rutaImagenMeta);
+        System.out.println("Se leyo la imagen meta.");
         this.tamannoPoblacion = tamannoPoblacion;
         this.poblacion = new Individuo[tamannoPoblacion];
         
@@ -24,11 +27,25 @@ public class AlgoritmoGenetico {
         this.dimensionImagen[0] = imagenX;
         this.dimensionImagen[1] = imagenY;
         
+        
+        
+        
+        /*
+        * Inicia el algoritmo genetico.
+        */
+        double mejoresIndividuos = 0.1 * generaciones;
+        this.evolucion = new Individuo[generaciones / (int)mejoresIndividuos];
+        
         crearPoblacion();
-        for(int generacion = 1; generacion<generaciones ; ++generacion){
+        System.out.println("Inicia algoritmo.");
+        for(int generacion = 1; generacion<generaciones ; ++generacion){ 
             funcionDeAdaptabilidad();
             multiplicacionDeIndividuos();
+            System.out.println("Generacion " + generacion + " terminada.");
         }
+        
+        System.out.println("Termina algoritmo.");
+        imprimirFinal();
         
     }
     
@@ -55,7 +72,9 @@ public class AlgoritmoGenetico {
         for(int x = 0; x < height; ++x){
             for(int y = 0; y < width; ++y){
                 imagenMetaRGB[(height-1) * y + x] = imagenMeta.getRGB(x, y);
+                //System.out.print(Integer.toBinaryString(imagenMeta.getRGB(x, y)) + "\t");
             }
+            //System.out.println("\n");
         }
         return imagenMetaRGB;
         
@@ -72,6 +91,7 @@ public class AlgoritmoGenetico {
     Ordena los individuos por adaptabilidad.
     Mayor a menor.
     */
+    //temporal
     private void algoritmoDeOrdenamiento(){
         
     }
@@ -121,5 +141,21 @@ public class AlgoritmoGenetico {
         
     }
     
+    
+    private void imprimirFinal(){
+        
+        int numero = 0;
+        int mejor = 0;
+        
+        for(int i = 0; i < this.tamannoPoblacion ; ++i){
+            if(poblacion[i].obtenerAdaptabilidad() > numero){
+                numero = poblacion[i].obtenerAdaptabilidad();
+                mejor = i;
+            }
+            
+        }
+        
+       poblacion[mejor].guardarIndividuo();
+    }
     
 }
