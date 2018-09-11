@@ -1,23 +1,52 @@
 package proyectoimagen;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+
 public class AlgoritmoGenetico {
     
-    int imagenMeta;
+    int imagenMeta [];
     int tamannoPoblacion;    
     Individuo poblacion [];
     
     
     AlgoritmoGenetico(int imagenMeta, int generaciones, int tamannoPoblacion){
         
-        this.imagenMeta = imagenMeta;
+        this.imagenMeta = leerImagenMeta();
         this.tamannoPoblacion = tamannoPoblacion;
-        poblacion = new Individuo[tamannoPoblacion];
+        this.poblacion = new Individuo[tamannoPoblacion];
         
         crearPoblacion();
         for(int generacion = 1; generacion<generaciones ; ++generacion){
             funcionDeAdaptabilidad();
             multiplicacionDeIndividuos();
         }
+        
+    }
+    
+    private int[] leerImagenMeta(){
+        BufferedImage imagenMeta = null;
+        
+        try {
+            imagenMeta = ImageIO.read(ProyectoImagen.class.getResource("verde.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(AlgoritmoGenetico.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        
+        int height = imagenMeta.getHeight();
+        int width = imagenMeta.getWidth();
+        int imagenMetaRGB [] = new int[height * width];
+        
+        for(int x = 0; x < height; ++x){
+            for(int y = 0; y < width; ++y){
+                imagenMetaRGB[height-1 * y + x] = imagenMeta.getRGB(x, y);
+            }
+        }
+        return imagenMetaRGB;
         
     }
     
