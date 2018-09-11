@@ -9,15 +9,20 @@ import javax.imageio.ImageIO;
 public class AlgoritmoGenetico {
     
     int imagenMeta [];
-    int tamannoPoblacion;    
+    int dimensionImagen[];
     Individuo poblacion [];
+    int tamannoPoblacion;
     
     
-    AlgoritmoGenetico(int imagenMeta, int generaciones, int tamannoPoblacion){
+    AlgoritmoGenetico(String rutaImagenMeta, int generaciones, int tamannoPoblacion, int imagenX, int imagenY){
         
-        this.imagenMeta = leerImagenMeta();
+        this.imagenMeta = leerImagenMeta(rutaImagenMeta);
         this.tamannoPoblacion = tamannoPoblacion;
         this.poblacion = new Individuo[tamannoPoblacion];
+        
+        this.dimensionImagen = new int[2];
+        this.dimensionImagen[0] = imagenX;
+        this.dimensionImagen[1] = imagenY;
         
         crearPoblacion();
         for(int generacion = 1; generacion<generaciones ; ++generacion){
@@ -27,11 +32,17 @@ public class AlgoritmoGenetico {
         
     }
     
-    private int[] leerImagenMeta(){
+    /*
+    *   Lee la imagen meta a partir de una ruta.
+    La guarda como un arreglo con estructura de matriz. (Formula: (nColumnas-1) * y + x)
+    Utiliza la clase ImageIO, cada dato posee el modelo rgb en bits. FF(S) FF(R) FF(G) FF(B).
+    Devuelve el arreglo nuevo con los datos de la imagen.
+    */
+    private int[] leerImagenMeta(String ruta){
         BufferedImage imagenMeta = null;
         
         try {
-            imagenMeta = ImageIO.read(ProyectoImagen.class.getResource("verde.jpg"));
+            imagenMeta = ImageIO.read(ProyectoImagen.class.getResource(ruta));
         } catch (IOException ex) {
             Logger.getLogger(AlgoritmoGenetico.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,7 +54,7 @@ public class AlgoritmoGenetico {
         
         for(int x = 0; x < height; ++x){
             for(int y = 0; y < width; ++y){
-                imagenMetaRGB[height-1 * y + x] = imagenMeta.getRGB(x, y);
+                imagenMetaRGB[(height-1) * y + x] = imagenMeta.getRGB(x, y);
             }
         }
         return imagenMetaRGB;
@@ -52,7 +63,7 @@ public class AlgoritmoGenetico {
     
     private void crearPoblacion(){
         for(int individuoActual = 0; individuoActual<tamannoPoblacion ; ++ individuoActual){
-            poblacion[individuoActual] = new Individuo(32);
+            poblacion[individuoActual] = new Individuo(this.dimensionImagen[0], this.dimensionImagen[1]);
             poblacion[individuoActual].formarIndividuoInicial(imagenMeta);
         }
     }
@@ -103,7 +114,7 @@ public class AlgoritmoGenetico {
         
         for(int parActual = 0; parActual < cantidadGeneracionPasada/2 ; parActual = parActual + 2){
             for(int nuevoIndividuo = 0; nuevoIndividuo < cantidadNuevaPoblacion ; ++nuevoIndividuo){
-                poblacion[nuevoIndividuo] = new Individuo(32);
+                poblacion[nuevoIndividuo] = new Individuo(this.dimensionImagen[0], this.dimensionImagen[1]);
                 poblacion[nuevoIndividuo].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta, 10);
             }
         }

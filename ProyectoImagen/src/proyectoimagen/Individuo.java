@@ -5,9 +5,7 @@ import java.util.Random;
 
 public class Individuo {
     
-    int informacionRojo [];
-    int informacionVerde [];
-    int informacionAzul [];
+    int informacionRGB [];
     
     int adaptabilidad;
     int tamanno;
@@ -18,13 +16,9 @@ public class Individuo {
     *   Separar los algoritmos de crear inicialmente y crearDescendencia puede no importar en teoria.
     *   Buscar forma de defenir tamanno solo una vez.
     */
-    Individuo(int tamanno){
-        //this.tamanno = tamanno * tamanno;
-        this.tamanno = 32 * 32;
-        
-        informacionAzul = new int[this.tamanno];
-        informacionRojo = new int[this.tamanno];
-        informacionVerde = new int[this.tamanno];
+    Individuo(int tamannox, int tamannoY){
+        this.tamanno = tamannox * tamannoY;
+        informacionRGB = new int[this.tamanno];
     }
     
     
@@ -37,14 +31,12 @@ public class Individuo {
     /*
     Algoritmo que crea un individuo con informacion random.
     */
-    public void formarIndividuoInicial(int imagenMeta){
+    public void formarIndividuoInicial(int imagenMeta []){
         
         Random numeroRandom = new Random();
         
         for(int indice = 0; indice < tamanno ; ++indice){
-            this.informacionAzul[indice] = numeroRandom.nextInt(256);
-            this.informacionRojo[indice] = numeroRandom.nextInt(256);
-            this.informacionVerde[indice] = numeroRandom.nextInt(256);
+            this.informacionRGB[indice] = numeroRandom.nextInt(256);
         }
         
         calcularAdaptabilidad(imagenMeta);
@@ -53,7 +45,7 @@ public class Individuo {
     /*
     Algoritmo de mutacion y decendencia.
     */
-    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta, int porcentajeMutacion){
+    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta [], int porcentajeMutacion){
         calcularAdaptabilidad(imagenMeta);
         
         int primerMitad [] = primerOrigen.obtenerMitad(0);
@@ -63,8 +55,8 @@ public class Individuo {
         int mitad = this.tamanno/2;
         
         for(int indice = 0 ; indice<mitad ; ++indice){
-            this.informacionAzul[indice] = primerMitad[indice];
-            this.informacionAzul[indice+mitad] = segundaMitad[indice];
+            this.informacionRGB[indice] = primerMitad[indice];
+            this.informacionRGB[indice+mitad] = segundaMitad[indice];
         }
         
         
@@ -76,7 +68,7 @@ public class Individuo {
         Random numeroRandom = new Random();
         int ciclosPorcentaje = (porcentajeMutacion)/100 * this.tamanno;
         for(int informacionActual = 0; informacionActual < ciclosPorcentaje ; ++informacionActual){
-            this.informacionAzul[numeroRandom.nextInt(this.tamanno)] = numeroRandom.nextInt(256);
+            this.informacionRGB[numeroRandom.nextInt(this.tamanno)] = numeroRandom.nextInt(256);
         }
         
     }
@@ -90,7 +82,7 @@ public class Individuo {
     A considerar: se puede hacer le parametro de imagen meta un atributo del objeto por el constructor.
     Esto podria mejorar tiempos.
     */
-    private void calcularAdaptabilidad(int imagenMeta){
+    private void calcularAdaptabilidad(int imagenMeta []){
         this.adaptabilidad = 0;
     }
     
@@ -112,7 +104,7 @@ public class Individuo {
         int mitad []=  new int[tamanno/2];
         
         for(int elemento = 0; elemento < tamanno/2 ; ++elemento){
-            mitad[elemento] = this.informacionAzul[elemento];
+            mitad[elemento] = this.informacionRGB[elemento];
         }
         
         return mitad;
