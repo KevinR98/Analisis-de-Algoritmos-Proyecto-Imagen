@@ -84,7 +84,16 @@ public class Individuo {
         
     }
     
-    
+
+    public void algoritmoGenetico()
+    {
+        //funcion de comparar en la adap... tomar el 100 meta y hacer que se acerquen lo más posible y al final 
+        //tener una funcion que cuente los numeros que se acerquen más y el menor será el mejor adapta. osea llega a la meta.
+        
+        
+        
+        
+    }
     
     
     //      Calculo de variables.
