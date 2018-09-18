@@ -10,13 +10,13 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class Individuo {
+    /*Nota convertir a privado*/
+    public int informacionRGB [];
     
-    int informacionRGB [];
-    
-    int adaptabilidad;
-    int tamanno;
-    int tammanoX;
-    int tammanoY;
+    private double adaptabilidad;
+    private int tamanno;
+    public int tammanoX;
+    public int tammanoY;
     
     /*
     A considerar: 
@@ -40,7 +40,7 @@ public class Individuo {
     /*
     Algoritmo que crea un individuo con informacion random.
     */
-    public void formarIndividuoInicial(int imagenMeta []){
+    public void formarIndividuoInicial(int imagenMeta [][]){
         
 
         
@@ -54,11 +54,9 @@ public class Individuo {
     /*
     Algoritmo de mutacion y decendencia.
     */
-    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta [], int porcentajeMutacion){
-        calcularAdaptabilidad(imagenMeta);
-        
-        int primerMitad [] = primerOrigen.obtenerMitad(0);
-        int segundaMitad [] = segundoOrigen.obtenerMitad(0);
+    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta [][], int porcentajeMutacion){
+        int primerMitad [] = primerOrigen.obtenerMitad();
+        int segundaMitad [] = segundoOrigen.obtenerMitad();
         
         //Merge
         int mitad = this.tamanno/2;
@@ -76,11 +74,13 @@ public class Individuo {
         */
         Random numeroRandom = new Random();
 
-        double ciclosPorcentaje = (porcentajeMutacion)/100 * this.tamanno;
+        double ciclosPorcentaje = (porcentajeMutacion)/(double)100 * this.tamanno;
         for(int informacionActual = 0; informacionActual < (int)ciclosPorcentaje ; ++informacionActual){
             
             this.informacionRGB[numeroRandom.nextInt(this.tamanno)] = calcularBitRandom();
         }
+        
+        calcularAdaptabilidad(imagenMeta);
         
     }
     
@@ -98,18 +98,64 @@ public class Individuo {
     
     //      Calculo de variables.
     
+    public double distanciaEuclideana(int imagenMeta [][])
+    {
+        
+        int color = 0;
+        int colorMeta = 0;
+        
+        int indice = 0;
+        
+        int diferenciaAzul = 0;
+        int diferenciaVerde = 0;
+        int diferenciaRojo = 0;
+        int diferenciaContraste = 0;
+        
+        double sumatoriaAzul = 0;
+        double sumatoriaVerde = 0;
+        double sumatoriaRojo = 0;
+        double sumatoriaContraste = 0;
+        
+        
+        double adaptabilidadPromedio = 0;
+        
+        for(int x = 0; x < this.tammanoX ; ++x){
+            for(int y = 0; y < this.tammanoY ; ++y){
+                indice = x * this.tammanoY + y;
+                
+                color = this.informacionRGB[x * this.tammanoY + y];
+                colorMeta = imagenMeta[x][y];
+                
+                diferenciaAzul = (color & 0x000000FF) - (colorMeta & 0x000000FF);
+                diferenciaVerde = (color >> 8 & 0x000000FF) - (colorMeta >> 8 & 0x000000FF);
+                diferenciaRojo = (color >> 16 & 0x000000FF) - (colorMeta >> 16 & 0x000000FF);
+                diferenciaContraste = (color >> 24 & 0x000000FF) - (colorMeta >> 24 & 0x000000FF);
+                
+                
+                sumatoriaAzul = sumatoriaAzul + Math.pow(diferenciaAzul,2);
+                sumatoriaVerde = sumatoriaVerde + Math.pow(diferenciaVerde,2);
+                sumatoriaRojo = sumatoriaRojo + Math.pow(diferenciaRojo,2);
+                sumatoriaContraste = sumatoriaContraste + Math.pow(diferenciaContraste,2);
+            }
+        }
+        
+        adaptabilidadPromedio = Math.sqrt(sumatoriaAzul) + Math.sqrt(sumatoriaVerde) + Math.sqrt(sumatoriaRojo) + Math.sqrt(sumatoriaContraste);
+        adaptabilidadPromedio = adaptabilidadPromedio / 4;
+        
+        return adaptabilidadPromedio;
+    }
+    
     /* 
     A considerar: se puede hacer le parametro de imagen meta un atributo del objeto por el constructor.
     Esto podria mejorar tiempos.
     */
-    private void calcularAdaptabilidad(int imagenMeta []){
-        Random numero = new Random();
-        this.adaptabilidad = numero.nextInt(100);
+    private void calcularAdaptabilidad(int imagenMeta [][]){
+        this.adaptabilidad = distanciaEuclideana(imagenMeta);
     }
     
     
     // Metodo Get de adaptabilidad.
-    public int obtenerAdaptabilidad(){
+    public double obtenerAdaptabilidad(){
         return this.adaptabilidad;
     }
     
@@ -139,7 +185,7 @@ public class Individuo {
     1 = rojo
     2 = verde
     */
-    private int [] obtenerMitad(int color){
+    private int [] obtenerMitad(){
         int mitad []=  new int[tamanno/2];
         
         for(int elemento = 0; elemento < tamanno/2 ; ++elemento){
@@ -167,7 +213,9 @@ public class Individuo {
             //System.out.println("\n");
         }
         System.out.println("Individuo guardado");
-    }
+        
+
     
+    }
     
 }

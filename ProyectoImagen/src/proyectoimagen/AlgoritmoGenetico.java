@@ -1,19 +1,21 @@
 package proyectoimagen;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
+
+import libreria.QuickSort;
+
 public class AlgoritmoGenetico {
     
-    int imagenMeta [];
+    int imagenMeta [][];
     int dimensionImagen[];
     Individuo poblacion [];
     int tamannoPoblacion;
-    
-    
     Individuo evolucion[];
     
     AlgoritmoGenetico(String rutaImagenMeta, int generaciones, int tamannoPoblacion, int imagenX, int imagenY){
@@ -37,16 +39,58 @@ public class AlgoritmoGenetico {
         this.evolucion = new Individuo[generaciones / (int)mejoresIndividuos];
         
         crearPoblacion();
+        
+        //debug
+        funcionDeAdaptabilidad();
+        imprimir();
+        
+        for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
+            System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
+        }
+        System.err.println("\n");
+        
+        //fin debug
+        
+        
         System.out.println("Inicia algoritmo.");
         for(int generacion = 1; generacion<generaciones ; ++generacion){ 
             funcionDeAdaptabilidad();
             multiplicacionDeIndividuos();
-            System.out.println("Generacion " + generacion + " terminada.");
+            //System.out.println("Generacion " + generacion + " terminada.");
         }
         
         System.out.println("Termina algoritmo.");
         imprimirFinal();
         
+    }
+    
+    
+    /*Nota: quitar metodo*/
+    private void imprimir(){
+        
+        Individuo a = this.poblacion[0];
+        
+        BufferedImage siguienteImagen = new BufferedImage(a.tammanoY, a.tammanoX, BufferedImage.TYPE_INT_ARGB);
+        
+        int color = 0;
+        
+        for(int x = 0; x < a.tammanoY; ++x){
+            for(int y = 0; y < a.tammanoX; ++y){
+                color = a.informacionRGB[a.tammanoY*y + x];
+                siguienteImagen.setRGB(x, y, color);
+                //System.out.print(Integer.toBinaryString(siguienteImagen.getRGB(x, y)) + "\t");
+            }
+            //System.out.println("\n");
+        }
+        System.out.println("Individuo guardado");
+        
+        
+        File imagenFinal = new File("D:\\entrada.png");
+        try {
+            ImageIO.write(siguienteImagen, "png", imagenFinal);
+        } catch (IOException ex) {
+            Logger.getLogger(Individuo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /*
@@ -55,7 +99,7 @@ public class AlgoritmoGenetico {
     Utiliza la clase ImageIO, cada dato posee el modelo rgb en bits. FF(S) FF(R) FF(G) FF(B).
     Devuelve el arreglo nuevo con los datos de la imagen.
     */
-    private int[] leerImagenMeta(String ruta){
+    private int[][] leerImagenMeta(String ruta){
         BufferedImage imagenMeta = null;
         
         try {
@@ -67,11 +111,11 @@ public class AlgoritmoGenetico {
         
         int height = imagenMeta.getHeight();
         int width = imagenMeta.getWidth();
-        int imagenMetaRGB [] = new int[height * width];
+        int imagenMetaRGB [][] = new int[height][width];
         
         for(int x = 0; x < height; ++x){
             for(int y = 0; y < width; ++y){
-                imagenMetaRGB[(height-1) * y + x] = imagenMeta.getRGB(x, y);
+                imagenMetaRGB[x][y] = imagenMeta.getRGB(x, y);
                 //System.out.print(Integer.toBinaryString(imagenMeta.getRGB(x, y)) + "\t");
             }
             //System.out.println("\n");
@@ -91,9 +135,64 @@ public class AlgoritmoGenetico {
     Ordena los individuos por adaptabilidad.
     Mayor a menor.
     */
-    //temporal
+   
+    private void quickSort(int primero, int ultimo) 
+    {
+        int i = primero;
+        int j = ultimo;
+
+        // index medio de la lista
+        double pivote = poblacion[primero + (ultimo - primero) / 2].obtenerAdaptabilidad();
+
+        // divide en dos arrays
+        while (i <= j) {
+            /**
+             * en cada iteración se identificara los numeros de cada lado(izq y der)
+             * dado el menor y el mayor respectivamente dependiendo del pivote para
+             * la comparación. Una vez completi, se puede hacer el intercambio de 
+             * ambos números
+             */
+            while (poblacion[i].obtenerAdaptabilidad() < pivote) {
+                i++;
+            }
+            while (poblacion[j].obtenerAdaptabilidad() > pivote) {
+                j--;
+            }
+            if (i <= j) {
+                intercambioQuickSort(i, j);
+                // mueve los indices de ambos lados
+                i++;
+                j--;
+            }
+        }
+
+        // llamado recursivo
+        if (primero < j) {
+            quickSort(primero, j);
+        }
+
+        if (i < ultimo) {
+            quickSort(i, ultimo);
+        }
+    }
+
+    private void intercambioQuickSort(int primero, int ultimo) 
+    {
+        Individuo variable_temporal = poblacion[primero];
+        poblacion[primero] = poblacion[ultimo];
+        poblacion[ultimo] = variable_temporal;
+    }
+    
+    
     private void algoritmoDeOrdenamiento(){
-        
+        quickSort(0, tamannoPoblacion-1);
+        /*
+        for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
+            
+            System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
+        }
+        System.out.println("\n");
+    */
     }
     
     /*
@@ -128,34 +227,36 @@ public class AlgoritmoGenetico {
     */
     private void multiplicacionDeIndividuos(){
         
-        int cantidadGeneracionPasada = 20;
-        int cantidadDescendencia = this.tamannoPoblacion - cantidadGeneracionPasada;
-        int cantidadNuevaPoblacion = cantidadDescendencia / (cantidadGeneracionPasada/2);
+        int indiceGeneracionPasada = 20; //indice en el elemento despues de la generacion pasada que se desea mantener
+        int cantidadDescendencia = this.tamannoPoblacion - indiceGeneracionPasada;
+        int cantidadNuevaPoblacion = cantidadDescendencia / (indiceGeneracionPasada/2);
+        int cantidadViejaPoblacion = indiceGeneracionPasada;
         
-        for(int parActual = 0; parActual < cantidadGeneracionPasada/2 ; parActual = parActual + 2){
-            for(int nuevoIndividuo = 0; nuevoIndividuo < cantidadNuevaPoblacion ; ++nuevoIndividuo){
-                poblacion[nuevoIndividuo] = new Individuo(this.dimensionImagen[0], this.dimensionImagen[1]);
-                poblacion[nuevoIndividuo].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta, 10);
+        for(int parActual = 0; parActual < cantidadViejaPoblacion ; parActual = parActual + 2){
+            //System.out.println(parActual);
+            //System.out.println("primer " + poblacion[parActual].obtenerAdaptabilidad());
+            //System.out.println("segundo " + poblacion[parActual+1].obtenerAdaptabilidad());
+                
+            for(int cantidadNuevoIndividuo = 1; cantidadNuevoIndividuo <= cantidadNuevaPoblacion ; ++cantidadNuevoIndividuo){
+                poblacion[indiceGeneracionPasada] = new Individuo(this.dimensionImagen[0], this.dimensionImagen[1]);
+                poblacion[indiceGeneracionPasada].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta, 30);
+                
+                //System.out.println("indice: " + indiceGeneracionPasada + " descendiente numero " + cantidadNuevoIndividuo + ": " + poblacion[indiceGeneracionPasada].obtenerAdaptabilidad());
+                indiceGeneracionPasada = indiceGeneracionPasada + 1;
             }
+            //System.out.println("\n");
         }
-        
+              
     }
     
     
     private void imprimirFinal(){
-        
-        int numero = 0;
-        int mejor = 0;
-        
-        for(int i = 0; i < this.tamannoPoblacion ; ++i){
-            if(poblacion[i].obtenerAdaptabilidad() > numero){
-                numero = poblacion[i].obtenerAdaptabilidad();
-                mejor = i;
-            }
-            
+        for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
+            System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
         }
-        
-       poblacion[mejor].guardarIndividuo();
+        System.err.println("\n");
+       
+        poblacion[0].guardarIndividuo();
     }
     
 }
