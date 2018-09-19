@@ -12,12 +12,12 @@ import libreria.QuickSort;
 
 public class AlgoritmoGenetico {
     
-    int imagenMeta [][];
-    int dimensionImagen[];
-    Individuo poblacion [];
-    int tamannoPoblacion;
-    Individuo evolucion[];
-    int tipoDistancia;
+    private int imagenMeta [][];
+    private int dimensionImagen[];
+    private Individuo poblacion [];
+    private int tamannoPoblacion;
+    private Individuo evolucion[];
+    private int tipoDistancia;
     
     /*
     Tipo distancia:
@@ -47,8 +47,6 @@ public class AlgoritmoGenetico {
         crearPoblacion();
         
         //debug
-        funcionDeAdaptabilidad();
-        imprimir();
         
         for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
             System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
@@ -69,35 +67,7 @@ public class AlgoritmoGenetico {
         imprimirFinal();
         
     }
-    
-    
-    /*Nota: quitar metodo*/
-    private void imprimir(){
-        
-        Individuo a = this.poblacion[0];
-        
-        BufferedImage siguienteImagen = new BufferedImage(a.tammanoY, a.tammanoX, BufferedImage.TYPE_INT_ARGB);
-        
-        int color = 0;
-        
-        for(int x = 0; x < a.tammanoY; ++x){
-            for(int y = 0; y < a.tammanoX; ++y){
-                color = a.informacionRGB[a.tammanoY*y + x];
-                siguienteImagen.setRGB(x, y, color);
-                //System.out.print(Integer.toBinaryString(siguienteImagen.getRGB(x, y)) + "\t");
-            }
-            //System.out.println("\n");
-        }
-        System.out.println("Individuo guardado");
-        
-        
-        File imagenFinal = new File("D:\\entrada.png");
-        try {
-            ImageIO.write(siguienteImagen, "png", imagenFinal);
-        } catch (IOException ex) {
-            Logger.getLogger(Individuo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+
     
     /*
     *   Lee la imagen meta a partir de una ruta.
@@ -193,12 +163,15 @@ public class AlgoritmoGenetico {
     private void algoritmoDeOrdenamiento(){
         quickSort(0, tamannoPoblacion-1);
         
+        //debug
+        /*
         for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
             
             System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
         }
         System.out.println("\n");
-    
+        */
+        //fin debug
     }
     
     /*

@@ -10,13 +10,12 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class Individuo {
-    /*Nota convertir a privado*/
-    public int informacionRGB [];
-    
+
+    private int informacionRGB [];
     private double adaptabilidad;
     private int tamanno;
-    public int tammanoX;
-    public int tammanoY;
+    private int tammanoX;
+    private int tammanoY;
     
     /*
     A considerar: 
