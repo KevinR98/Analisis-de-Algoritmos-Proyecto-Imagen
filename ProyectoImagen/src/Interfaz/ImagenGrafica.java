@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import proyectoimagen.AlgoritmoGenetico;
 
 /**
@@ -22,18 +24,20 @@ import proyectoimagen.AlgoritmoGenetico;
 public class ImagenGrafica extends JFrame{
       
       InputStream imgStream;
-      Image imgArray[]=new Image[10000];
+      Image imgArray[]=new Image[10];
+      ImageIcon imgArray2[]=new ImageIcon[10];
+      int tamanno;
       
       public ImagenGrafica(AlgoritmoGenetico a, int tam){
           
             super("Imagenes");
             
-            this.setSize(250, 400);
+            this.setSize(300, 300);
             this.setVisible(true);
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
-            System.out.println("liveee");
-            imgArray=a.cargaImagen();
-            System.out.println("liveee"+tam);
+            imgArray2=a.cargaImagen();
+            tamanno=tam;
+            System.out.println("poblacion.."+tam);
             repaint();
 
         
@@ -45,11 +49,12 @@ public class ImagenGrafica extends JFrame{
             //g2.setColor(Color.black);
             g2.fillRect(0, 0, 250, 400);//creo un triangulo negro del tamaño de la ventana para fondo
             
-            for(int cont=0;cont<imgArray.length;cont++){
+            for(int cont=0;cont<tamanno;cont++){
                 try
                 {
                     Thread.sleep(100);
-                    g2.drawImage(imgArray[cont], 100, 50, 70, 70, null);
+                    g2.drawImage(imgArray2[cont].getImage(), 100, 50, 70, 70, null);
+                    JOptionPane.showMessageDialog(null, "Genetica Evolutiva", "Muestra la imagen", JOptionPane.INFORMATION_MESSAGE);
                 }
                 catch(InterruptedException ex)
                 {

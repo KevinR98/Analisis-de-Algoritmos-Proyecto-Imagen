@@ -314,9 +314,8 @@ public class Individuo {
                 sumatoriaVerde += diferenciaVerde;
                 sumatoriaRojo += diferenciaRojo;
                 
-                returnInt = ((int)sumatoriaAzul+(int)sumatoriaVerde+(int)sumatoriaRojo)/3;
-                System.out.println("...."+returnInt);
-                Color color1 = new Color(returnInt,returnInt,returnInt);
+                //returnInt = ((int)sumatoriaAzul+(int)sumatoriaVerde+(int)sumatoriaRojo)/3;
+                Color color1 = new Color((int)sumatoriaRojo,(int)sumatoriaVerde,(int)sumatoriaAzul);
                 img.setRGB(x, y, color1.getRGB());
                 
                 sumatoriaAzul =0;
