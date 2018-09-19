@@ -52,7 +52,7 @@ public class AlgoritmoGenetico {
         
         //debug
         funcionDeAdaptabilidad();
-        poblacion[0].guardarIndividuo("primero");
+        //poblacion[0].guardarIndividuo("primero");
         for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
             System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
         }
@@ -282,7 +282,7 @@ public class AlgoritmoGenetico {
         }
         System.err.println("\n");
        
-        poblacion[0].guardarIndividuo("ultimo");
+        //poblacion[0].guardarIndividuo("ultimo");
     }
     
 }
