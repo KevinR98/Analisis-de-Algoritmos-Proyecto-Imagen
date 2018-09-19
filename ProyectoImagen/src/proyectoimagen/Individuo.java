@@ -1,6 +1,7 @@
 
 package proyectoimagen;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -276,6 +277,64 @@ public class Individuo {
             Logger.getLogger(Individuo.class.getName()).log(Level.SEVERE, null, ex);
         }
     
+    }
+    
+    public BufferedImage getColorGris()
+    {
+        
+        int color = 0;
+        int colorMeta = 0;
+        
+        int indice = 0;
+        
+        int diferenciaAzul = 0;
+        int diferenciaVerde = 0;
+        int diferenciaRojo = 0;
+        int diferenciaContraste = 0;
+        
+        double sumatoriaAzul = 0;
+        double sumatoriaVerde = 0;
+        double sumatoriaRojo = 0;
+        double sumatoriaContraste = 0;
+        
+        
+        double adaptabilidadPromedio = 0;
+        
+        int returnInt=0;
+        
+        BufferedImage img = new BufferedImage(300,300,BufferedImage.TYPE_INT_RGB);
+        
+        for(int x = 0; x < this.tammanoX ; ++x){
+            for(int y = 0; y < this.tammanoY ; ++y){
+                indice = x * this.tammanoY + y;
+                
+                color = this.informacionRGB[indice];
+                
+                diferenciaAzul = (color & 0x000000FF);
+                diferenciaVerde = (color >> 8 & 0x000000FF);
+                diferenciaRojo = (color >> 16 & 0x000000FF);
+                
+                
+                sumatoriaAzul += diferenciaAzul;
+                sumatoriaVerde += diferenciaVerde;
+                sumatoriaRojo += diferenciaRojo;
+                
+                returnInt = ((int)sumatoriaAzul+(int)sumatoriaVerde+(int)sumatoriaRojo)/3;
+                System.out.println("...."+returnInt);
+                Color color1 = new Color(returnInt,returnInt,returnInt);
+                img.setRGB(x, y, color1.getRGB());
+                
+                sumatoriaAzul =0;
+                sumatoriaVerde =0;
+                sumatoriaRojo =0;
+                
+            }
+        }
+        
+        adaptabilidadPromedio = sumatoriaAzul + sumatoriaVerde + sumatoriaRojo;
+        adaptabilidadPromedio = adaptabilidadPromedio / 3;
+        
+        return img;
     }
     
 }

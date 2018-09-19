@@ -1,11 +1,15 @@
 package proyectoimagen;
 
+import Interfaz.ImagenGrafica;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 
 import libreria.QuickSort;
@@ -14,7 +18,7 @@ public class AlgoritmoGenetico {
     
     private int imagenMeta [][];
     private int dimensionImagen[];
-    private Individuo poblacion [];
+    public Individuo poblacion [];
     private int tamannoPoblacion;
     private Individuo evolucion[];
     private int tipoDistancia;
@@ -64,10 +68,52 @@ public class AlgoritmoGenetico {
         }
         
         System.out.println("Termina algoritmo.");
-        imprimirFinal();
+//        imprimirFinal();
         
     }
 
+    public Image[] cargaImagen(){
+            int contador = 0;
+            Image imgArray[]=new Image[10000];
+             InputStream imgStream;
+            try {
+                BufferedImage img = new BufferedImage( 
+                300, 300, BufferedImage.TYPE_INT_RGB );
+                
+                for(int cont=0;tamannoPoblacion>cont;cont++){
+                    System.out.println("live"+cont);
+                    File outputfile = new File("image"+contador+".png");
+                    contador++;
+                    
+                    img = poblacion[cont].getColorGris();
+                    
+                    ImageIO.write(img, "png", outputfile);
+//                    
+//                                        BufferedImage img = ImageIO.read(outputfile);
+//                    ImageIcon icon = new ImageIcon(img);
+//                    
+//                    imgArray2[cont]=icon;
+                }
+                
+                
+                
+                for(int cont=0;cont<contador;cont++){
+                    Image imagen;
+                    imgStream = ImagenGrafica.class.getResourceAsStream("image"+contador+".jpg");//el path debe ser directo img es mi directorio
+                    imagen = ImageIO.read(imgStream);
+                    imgArray[cont]=imagen;
+                }
+                  
+                return imgArray;
+               
+            } catch (IOException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+            }
+            return imgArray;
+      }
+
+    
     
     /*
     *   Lee la imagen meta a partir de una ruta.
