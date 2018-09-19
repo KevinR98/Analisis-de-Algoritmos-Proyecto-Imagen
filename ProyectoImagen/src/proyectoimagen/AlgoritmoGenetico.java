@@ -17,8 +17,14 @@ public class AlgoritmoGenetico {
     Individuo poblacion [];
     int tamannoPoblacion;
     Individuo evolucion[];
+    int tipoDistancia;
     
-    AlgoritmoGenetico(String rutaImagenMeta, int generaciones, int tamannoPoblacion, int imagenX, int imagenY){
+    /*
+    Tipo distancia:
+    0 - euclideana
+    1 - manhattan
+    */
+    AlgoritmoGenetico(String rutaImagenMeta, int generaciones, int tamannoPoblacion, int imagenX, int imagenY, int tipoDistancia){
         
         this.imagenMeta = leerImagenMeta(rutaImagenMeta);
         System.out.println("Se leyo la imagen meta.");
@@ -28,7 +34,7 @@ public class AlgoritmoGenetico {
         this.dimensionImagen = new int[2];
         this.dimensionImagen[0] = imagenX;
         this.dimensionImagen[1] = imagenY;
-        
+        this.tipoDistancia = tipoDistancia;
         
         
         
@@ -56,7 +62,7 @@ public class AlgoritmoGenetico {
         for(int generacion = 1; generacion<generaciones ; ++generacion){ 
             funcionDeAdaptabilidad();
             multiplicacionDeIndividuos();
-            //System.out.println("Generacion " + generacion + " terminada.");
+            System.out.println("Generacion " + generacion + " terminada.");
         }
         
         System.out.println("Termina algoritmo.");
@@ -127,7 +133,7 @@ public class AlgoritmoGenetico {
     private void crearPoblacion(){
         for(int individuoActual = 0; individuoActual<tamannoPoblacion ; ++ individuoActual){
             poblacion[individuoActual] = new Individuo(this.dimensionImagen[0], this.dimensionImagen[1]);
-            poblacion[individuoActual].formarIndividuoInicial(imagenMeta);
+            poblacion[individuoActual].formarIndividuoInicial(imagenMeta, tipoDistancia);
         }
     }
     
@@ -186,13 +192,13 @@ public class AlgoritmoGenetico {
     
     private void algoritmoDeOrdenamiento(){
         quickSort(0, tamannoPoblacion-1);
-        /*
+        
         for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
             
             System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
         }
         System.out.println("\n");
-    */
+    
     }
     
     /*
@@ -239,7 +245,7 @@ public class AlgoritmoGenetico {
                 
             for(int cantidadNuevoIndividuo = 1; cantidadNuevoIndividuo <= cantidadNuevaPoblacion ; ++cantidadNuevoIndividuo){
                 poblacion[indiceGeneracionPasada] = new Individuo(this.dimensionImagen[0], this.dimensionImagen[1]);
-                poblacion[indiceGeneracionPasada].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta, 30);
+                poblacion[indiceGeneracionPasada].crearDescendencia(poblacion[parActual], poblacion[parActual+1], this.imagenMeta, 50, tipoDistancia);
                 
                 //System.out.println("indice: " + indiceGeneracionPasada + " descendiente numero " + cantidadNuevoIndividuo + ": " + poblacion[indiceGeneracionPasada].obtenerAdaptabilidad());
                 indiceGeneracionPasada = indiceGeneracionPasada + 1;

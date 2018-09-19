@@ -10,7 +10,7 @@ public class ProyectoImagen
     public static void main(String[] args) 
     {
 
-        AlgoritmoGenetico  a = new AlgoritmoGenetico("verde.png", 10000, 1000, 30, 30);
+        AlgoritmoGenetico  a = new AlgoritmoGenetico("verde.png", 1000, 1000, 30, 30,1);
         
         //Corrida formula de similitud euclediana
         //euclediana();

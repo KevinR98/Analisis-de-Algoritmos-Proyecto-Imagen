@@ -40,7 +40,7 @@ public class Individuo {
     /*
     Algoritmo que crea un individuo con informacion random.
     */
-    public void formarIndividuoInicial(int imagenMeta [][]){
+    public void formarIndividuoInicial(int imagenMeta [][], int distancia){
         
 
         
@@ -48,13 +48,13 @@ public class Individuo {
             this.informacionRGB[indice] = calcularBitRandom();
         }
         
-        calcularAdaptabilidad(imagenMeta);
+        calcularAdaptabilidad(imagenMeta, distancia);
     }
     
     /*
     Algoritmo de mutacion y decendencia.
     */
-    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta [][], int porcentajeMutacion){
+    public void crearDescendencia(Individuo primerOrigen, Individuo segundoOrigen, int imagenMeta [][], int porcentajeMutacion, int distancia){
         int primerMitad [] = primerOrigen.obtenerMitad();
         int segundaMitad [] = segundoOrigen.obtenerMitad();
         
@@ -80,7 +80,7 @@ public class Individuo {
             this.informacionRGB[numeroRandom.nextInt(this.tamanno)] = calcularBitRandom();
         }
         
-        calcularAdaptabilidad(imagenMeta);
+        calcularAdaptabilidad(imagenMeta, distancia);
         
     }
     
@@ -145,12 +145,67 @@ public class Individuo {
         return adaptabilidadPromedio;
     }
     
+    
+    private double distanciaManhattan (int imagenMeta [][]){
+                
+        int color = 0;
+        int colorMeta = 0;
+        
+        int indice = 0;
+        
+        int diferenciaAzul = 0;
+        int diferenciaVerde = 0;
+        int diferenciaRojo = 0;
+        int diferenciaContraste = 0;
+        
+        double sumatoriaAzul = 0;
+        double sumatoriaVerde = 0;
+        double sumatoriaRojo = 0;
+        double sumatoriaContraste = 0;
+        
+        
+        double adaptabilidadPromedio = 0;
+        
+        for(int x = 0; x < this.tammanoX ; ++x){
+            for(int y = 0; y < this.tammanoY ; ++y){
+                indice = x * this.tammanoY + y;
+                
+                color = this.informacionRGB[x * this.tammanoY + y];
+                colorMeta = imagenMeta[x][y];
+                
+                diferenciaAzul = (color & 0x000000FF) - (colorMeta & 0x000000FF);
+                diferenciaVerde = (color >> 8 & 0x000000FF) - (colorMeta >> 8 & 0x000000FF);
+                diferenciaRojo = (color >> 16 & 0x000000FF) - (colorMeta >> 16 & 0x000000FF);
+                diferenciaContraste = (color >> 24 & 0x000000FF) - (colorMeta >> 24 & 0x000000FF);
+                
+                
+                sumatoriaAzul = sumatoriaAzul + diferenciaAzul;
+                sumatoriaVerde = sumatoriaVerde + diferenciaVerde;
+                sumatoriaRojo = sumatoriaRojo + diferenciaRojo;
+                sumatoriaContraste = sumatoriaContraste + diferenciaContraste;
+            }
+        }
+        
+        adaptabilidadPromedio = sumatoriaAzul + sumatoriaContraste + sumatoriaRojo + sumatoriaVerde;
+        adaptabilidadPromedio = adaptabilidadPromedio / 4;
+        
+        return adaptabilidadPromedio;
+    }
+    
+    
+    
     /* 
     A considerar: se puede hacer le parametro de imagen meta un atributo del objeto por el constructor.
     Esto podria mejorar tiempos.
     */
-    private void calcularAdaptabilidad(int imagenMeta [][]){
-        this.adaptabilidad = distanciaEuclideana(imagenMeta);
+    private void calcularAdaptabilidad(int imagenMeta [][], int distancia){
+        if(distancia == 0){
+            this.adaptabilidad = distanciaEuclideana(imagenMeta);
+        } else if(distancia == 1){
+            this.adaptabilidad = distanciaManhattan(imagenMeta);
+        }
+
+        
     }
     
     
@@ -200,21 +255,27 @@ public class Individuo {
     //Salida
     
     public void guardarIndividuo(){
-        //BufferedImage siguienteImagen = new BufferedImage(this.tammanoY, this.tammanoX, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage siguienteImagen = new BufferedImage(this.tammanoY, this.tammanoX, BufferedImage.TYPE_INT_ARGB);
         
         int color = 0;
         
         for(int x = 0; x < this.tammanoY; ++x){
             for(int y = 0; y < this.tammanoX; ++y){
                 color = this.informacionRGB[this.tammanoY*y + x];
-                //siguienteImagen.setRGB(x, y, color);
+                siguienteImagen.setRGB(x, y, color);
                 //System.out.print(Integer.toBinaryString(siguienteImagen.getRGB(x, y)) + "\t");
             }
             //System.out.println("\n");
         }
         System.out.println("Individuo guardado");
         
-
+        
+        File imagenFinal = new File("D:\\salida.png");
+        try {
+            ImageIO.write(siguienteImagen, "png", imagenFinal);
+        } catch (IOException ex) {
+            Logger.getLogger(Individuo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     
     }
     
