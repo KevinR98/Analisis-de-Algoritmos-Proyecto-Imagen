@@ -72,45 +72,46 @@ public class AlgoritmoGenetico {
         
     }
 
-    public Image[] cargaImagen(){
+    public ImageIcon[] cargaImagen(){
             int contador = 0;
-            Image imgArray[]=new Image[10000];
-             InputStream imgStream;
+            Image imgArray[]=new Image[10];
+            InputStream imgStream;
+            ImageIcon imgArray2[]=new ImageIcon[10];
+            
             try {
                 BufferedImage img = new BufferedImage( 
                 300, 300, BufferedImage.TYPE_INT_RGB );
                 
                 for(int cont=0;tamannoPoblacion>cont;cont++){
-                    System.out.println("live"+cont);
+                    System.out.println("poblacion "+cont);
                     File outputfile = new File("image"+contador+".png");
                     contador++;
                     
                     img = poblacion[cont].getColorGris();
                     
                     ImageIO.write(img, "png", outputfile);
-//                    
-//                                        BufferedImage img = ImageIO.read(outputfile);
-//                    ImageIcon icon = new ImageIcon(img);
-//                    
-//                    imgArray2[cont]=icon;
+              
+                    BufferedImage img2 = ImageIO.read(outputfile);
+                    ImageIcon icon = new ImageIcon(img);
+                    
+                    imgArray2[cont]=icon;
                 }
                 
-                
-                
-                for(int cont=0;cont<contador;cont++){
-                    Image imagen;
-                    imgStream = ImagenGrafica.class.getResourceAsStream("image"+contador+".jpg");//el path debe ser directo img es mi directorio
-                    imagen = ImageIO.read(imgStream);
-                    imgArray[cont]=imagen;
-                }
+//                for(int cont=0;cont<contador;cont++){
+//                    System.out.println("jeremy.."+cont);
+//                    Image imagen;
+//                    imgStream = ImagenGrafica.class.getResourceAsStream("image"+contador+".jpg");//el path debe ser directo img es mi directorio
+//                    imagen = ImageIO.read(imgStream);
+//                    imgArray[cont]=imagen;
+//                }
                   
-                return imgArray;
+                return imgArray2;
                
             } catch (IOException e) {
                   // TODO Auto-generated catch block
                   e.printStackTrace();
             }
-            return imgArray;
+            return imgArray2;
       }
 
     
