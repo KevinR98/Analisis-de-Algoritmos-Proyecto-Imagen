@@ -103,8 +103,6 @@ public class Individuo {
         int color = 0;
         int colorMeta = 0;
         
-        int indice = 0;
-        
         int diferenciaAzul = 0;
         int diferenciaVerde = 0;
         int diferenciaRojo = 0;
@@ -120,8 +118,7 @@ public class Individuo {
         
         for(int x = 0; x < this.tammanoX ; ++x){
             for(int y = 0; y < this.tammanoY ; ++y){
-                indice = x * this.tammanoY + y;
-                
+
                 color = this.informacionRGB[x * this.tammanoY + y];
                 colorMeta = imagenMeta[x][y];
                 
@@ -150,7 +147,6 @@ public class Individuo {
         int color = 0;
         int colorMeta = 0;
         
-        int indice = 0;
         
         int diferenciaAzul = 0;
         int diferenciaVerde = 0;
@@ -167,7 +163,6 @@ public class Individuo {
         
         for(int x = 0; x < this.tammanoX ; ++x){
             for(int y = 0; y < this.tammanoY ; ++y){
-                indice = x * this.tammanoY + y;
                 
                 color = this.informacionRGB[x * this.tammanoY + y];
                 colorMeta = imagenMeta[x][y];
@@ -253,7 +248,7 @@ public class Individuo {
     
     //Salida
     
-    public void guardarIndividuo(){
+    public void guardarIndividuo(String nombre){
         BufferedImage siguienteImagen = new BufferedImage(this.tammanoY, this.tammanoX, BufferedImage.TYPE_INT_ARGB);
         
         int color = 0;
@@ -269,7 +264,7 @@ public class Individuo {
         System.out.println("Individuo guardado");
         
         
-        File imagenFinal = new File("D:\\salida.png");
+        File imagenFinal = new File("D:\\"+nombre+".png");
         try {
             ImageIO.write(siguienteImagen, "png", imagenFinal);
         } catch (IOException ex) {

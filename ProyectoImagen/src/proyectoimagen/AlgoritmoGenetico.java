@@ -47,7 +47,8 @@ public class AlgoritmoGenetico {
         crearPoblacion();
         
         //debug
-        
+        funcionDeAdaptabilidad();
+        poblacion[0].guardarIndividuo("primero");
         for(int indice = 0; indice < this.tamannoPoblacion ; ++ indice){
             System.out.print(poblacion[indice].obtenerAdaptabilidad() + "\t");
         }
@@ -60,7 +61,7 @@ public class AlgoritmoGenetico {
         for(int generacion = 1; generacion<generaciones ; ++generacion){ 
             funcionDeAdaptabilidad();
             multiplicacionDeIndividuos();
-            System.out.println("Generacion " + generacion + " terminada.");
+            //System.out.println("Generacion " + generacion + " terminada.");
         }
         
         System.out.println("Termina algoritmo.");
@@ -235,7 +236,7 @@ public class AlgoritmoGenetico {
         }
         System.err.println("\n");
        
-        poblacion[0].guardarIndividuo();
+        poblacion[0].guardarIndividuo("ultimo");
     }
     
 }
