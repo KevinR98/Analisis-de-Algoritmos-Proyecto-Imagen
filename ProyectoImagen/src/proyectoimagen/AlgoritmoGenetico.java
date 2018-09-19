@@ -282,7 +282,6 @@ public class AlgoritmoGenetico {
         }
         System.err.println("\n");
        
-        poblacion[0].guardarIndividuo();
     }
     
 }
